@@ -10,7 +10,6 @@ class KhoaHoc:
     def thongTinKhoaHoc(self):
         return f"Mã KH: {self.maKhoaHoc}, Tên KH: {self.tenKhoaHoc}, Hình thức: {self.hinhThuc}, Học phí: {self.hocPhi}"
 
-
 class HocVien:
     def __init__(self, maHV, tenHV, ngaySinh):
         self.maHV = maHV
