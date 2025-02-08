@@ -1,0 +1,105 @@
+﻿@page "/list-store"
+@inject HttpClient _httpClient;
+@inject ProductService ProductService;
+<style>
+    .table-responsive {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .store-table {
+        width: 100%;
+        table-layout: fixed;
+        font-size: 14px;
+    }
+
+    .store-table th, .store-table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 8px;
+    }
+
+    .truncate-text {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .img-thumbnail {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+    }
+</style>
+
+<h1 class="text-center">Store List</h1>
+
+<a href="/store">
+    <button class="btn btn-primary mb-3">Create store</button>
+</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered store-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">Id</th>
+                <th style="width: 20%;">Name</th>
+                <th style="width: 20%;">Alias</th>
+                <th style="width: 30%;">Description</th>
+                <th style="width: 10%;">Image</th>
+                <th style="width: 15%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (StoreList.Any())
+            {
+                @foreach (var store in StoreList)
+                {
+                    <tr>
+                        <td>@store.Id</td>
+                        <td>@store.Name</td>
+                        <td>@store.Alias</td>
+                        <td class="truncate-text">@store.Description</td>
+                        <td>
+                            <img src="@store.ImageUrl" alt="Store Image" class="img-thumbnail">
+                        </td>
+                        <td>
+                            <a href="/store/@store.Id">
+                                <button class="btn btn-primary btn-sm">Edit</button>
+                            </a>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteStore(store.Id.ToString())">Delete</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No stores available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<Store> StoreList = new List<Store>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        StoreList = await ProductService.GetAllListStore();
+    }
+
+    private async Task DeleteStore(string id)
+    {
+        bool success = await ProductService.DeleteStore(id);
+        if (success)
+        {
+            StoreList = await ProductService.GetAllListStore();
+        }
+    }
+}
