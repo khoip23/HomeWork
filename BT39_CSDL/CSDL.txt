@@ -1,0 +1,101 @@
+
+CREATE DATABASE db_QLBanSach;
+GO
+
+USE db_QLBanSach;
+GO
+
+CREATE TABLE KhachHang (
+    MaKH VARCHAR(10) PRIMARY KEY, 
+    TaiKhoan VARCHAR(50) NOT NULL, 
+    MatKhau VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    DiaChi NVARCHAR(200),
+    DienThoai VARCHAR(15),
+    GioiTinh BIT,
+    NgaySinh DATE,
+    HoTen NVARCHAR(100)
+);
+
+CREATE TABLE DonHang (
+    MaDonHang VARCHAR(10) PRIMARY KEY,
+    MaKH VARCHAR(10) NOT NULL,
+    NgayGiao DATE,
+    NgayDat DATE,
+    TinhTrangGiaoHang NVARCHAR(50),
+    DaThanhToan BIT DEFAULT 0,
+    FOREIGN KEY (MaKH) REFERENCES KhachHang(MaKH)
+);
+
+CREATE TABLE TacGia (
+    MaTacGia VARCHAR(10) PRIMARY KEY,
+    TenTacGia NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Sach (
+    MaSach VARCHAR(10) PRIMARY KEY,
+    TenSach NVARCHAR(200) NOT NULL,
+    MaTacGia VARCHAR(10) NOT NULL,
+    MaNXB VARCHAR(10) NOT NULL,
+    MaChuDe VARCHAR(10) NOT NULL,
+    SoLuong INT,
+    DonGia DECIMAL(12,2),
+    NgayCapNhat DATE,
+    AnhBia NVARCHAR(200),
+    MoTa NVARCHAR(500),
+    GiaBan DECIMAL(12,2),
+    FOREIGN KEY (MaTacGia) REFERENCES TacGia(MaTacGia),
+    FOREIGN KEY (MaNXB) REFERENCES NhaXuatBan(MaNXB),
+    FOREIGN KEY (MaChuDe) REFERENCES ChuDe(MaChuDe)
+);
+
+
+CREATE TABLE ChuDe (
+    MaChuDe VARCHAR(10) PRIMARY KEY,
+    TenChuDe NVARCHAR(100) NOT NULL
+);
+
+CREATE TABLE NhaXuatBan (
+    MaNXB VARCHAR(10) PRIMARY KEY,
+    TenNXB NVARCHAR(100) NOT NULL,
+    DienThoai VARCHAR(15),
+    DiaChi NVARCHAR(200)
+);
+
+
+CREATE TABLE DonHang_Sach (
+    MaDonHang VARCHAR(10) NOT NULL,
+    MaSach VARCHAR(10) NOT NULL,
+    SoLuong INT NOT NULL,
+    PRIMARY KEY (MaDonHang, MaSach),
+    FOREIGN KEY (MaDonHang) REFERENCES DonHang(MaDonHang),
+    FOREIGN KEY (MaSach) REFERENCES Sach(MaSach)
+);
+
+
+CREATE TABLE Sach_ChuDe (
+    MaSach VARCHAR(10) NOT NULL,
+    MaChuDe VARCHAR(10) NOT NULL,
+    PRIMARY KEY (MaSach, MaChuDe),
+    FOREIGN KEY (MaSach) REFERENCES Sach(MaSach),
+    FOREIGN KEY (MaChuDe) REFERENCES ChuDe(MaChuDe)
+);
+
+
+CREATE TABLE Sach_NhaXuatBan (
+    MaSach VARCHAR(10) NOT NULL,
+    MaNXB VARCHAR(10) NOT NULL,
+    PRIMARY KEY (MaSach, MaNXB),
+    FOREIGN KEY (MaSach) REFERENCES Sach(MaSach),
+    FOREIGN KEY (MaNXB) REFERENCES NhaXuatBan(MaNXB)
+);
+
+
+CREATE TABLE Sach_TacGia (
+    MaSach VARCHAR(10) NOT NULL,
+    MaTacGia VARCHAR(10) NOT NULL,
+    VaiTro NVARCHAR(50),
+    PRIMARY KEY (MaSach, MaTacGia),
+    FOREIGN KEY (MaSach) REFERENCES Sach(MaSach),
+    FOREIGN KEY (MaTacGia) REFERENCES TacGia(MaTacGia)
+);
